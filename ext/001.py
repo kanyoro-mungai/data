@@ -2,9 +2,9 @@
 from bs4 import BeautifulSoup
 from urllib import FancyURLopener
 from random import choice
-import csv
-from astropy.table import Table, Column
 import numpy as np
+import pandas as pd
+
 
 # making the bot a browser
 user_agents = [
@@ -27,15 +27,45 @@ myopener = MyOpener()
 content = myopener.open("https://ihub.co.ke/jobs")
 soup = BeautifulSoup(content, 'html.parser')
 
-# locating Div for jobs
-jobs = soup.find_all("div", {"class": "container-fluid jobsboard-row"})
+# listings
+title = []
+company = []
+job_location = []
+job_category = []
+link = []
+date = []
 
 
-for job in jobs: 
+# locating all jobs
+job_listings = soup.find_all("div", {"class": "container-fluid jobsboard-row"})
 
-	company = {jobs.find("div", {"class": "job-company"}).text,}
-	location = jobs.find("div", {"class": "job-location"}).text,
-	Description = jobs.find("div", {"class": "post-description"}).text
+#Extracting job Information
+for job in job_listings:
+    # job title
+    name = job.h3.a.text.strip()
+    title.append(name)
 
+    # company
+    company_name = job.find('div', class_='job-company').text.strip()
+    company.append(company_name)
 
+    # category of job
+    category = job.find('div', class_='job-cat').text.strip()
+    job_category.append(category)
 
+    #dat0
+    date_0 = job.find('div', class_='job-time').text.strip()
+    date.append(date_0)
+
+    link_0 = job.find('div', class_='job-more').a
+    link.append(link_0)
+
+#writing information into dataframe
+
+report = pd.DataFrame({'Job_Title': title,
+                       'Comany': company,
+                       'Type':job_category,
+                       'Date_of_Posting':date,
+                       'link_to_job': link})
+
+report.to_csv('jobs.csv', encoding='utf-8', index=False)
