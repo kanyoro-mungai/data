@@ -1,0 +1,10 @@
+--sites to actually get the information from.
+		-credible sites with good accreditations
+	__reddit(discussions)
+	__twitter feeds of specific DA organistions
+	__
+
+
+--getting and storing the data from the various sites.
+
+-- displaying the results and receiving the results.
